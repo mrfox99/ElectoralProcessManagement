@@ -73,10 +73,12 @@ class User(database.Model):
     def is_email_valid(email):
         # print("T", email, validate_email(email))
         # return parseaddr('foo@example.com')[1] != ""
-        try:
-            return email == "admin@admin.com" or validate_email(email, check_mx=True)
-        except Exception:
-            return False
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        return re.fullmatch(regex, email)
+        # try:
+        #     return email == "admin@admin.com" or validate_email(email, verify=True)
+        # except Exception:
+        #     return False
 
     @staticmethod
     def is_password_valid(password):
