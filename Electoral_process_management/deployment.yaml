@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  election_database:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - election_volume:/var/lib/mysql
+    networks:
+      - election_network
+
+  election_database_migration:
+    image: election_database_migration
+    environment:
+      - DATABASE_URL=election_database
+    networks:
+      - election_network
+
+  redis:
+    image: redis
+    networks:
+      - election_network
+
+  admin_service:
+    image: admin
+    environment:
+      - DATABASE_URL=election_database
+    ports:
+      - 5001:5001
+    networks:
+      - election_network
+
+  daemon_service:
+    image: daemon
+    environment:
+      - REDIS_URL=redis
+      - DATABASE_URL=election_database
+    networks:
+      - election_network
+
+  voting_station_service:
+    image: voting_station
+    environment:
+      - REDIS_URL=redis
+    ports:
+      - 5002:5002
+    networks:
+      - election_network
+
+volumes:
+  election_volume:
+
+networks:
+  election_network:

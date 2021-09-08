@@ -1,0 +1,13 @@
+﻿version: "3"
+
+services:
+  authentication_database:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3307:3306
+  adminer:
+    image: adminer
+    ports:
+      - 8081:8080
