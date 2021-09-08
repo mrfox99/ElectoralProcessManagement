@@ -1,0 +1,116 @@
+docker ps
+docker exec -it <contianer_name>
+docker volume ls
+docker volume  inspect 06_db_data
+
+\\wsl$\docker-desktop-data\version-pack-data\community\docker\volumes
+
+docker-machine create manager --virtualbox-no-vtx-check :(
+docker-machine --native-ssh create --driver hyperv --hyperv-virtual-switch docker-machine-external-switch hypervdockermachine :)
+docker-machine --native-ssh ssh manager
+
+docker swarm init
+docker node ls
+docker swarm join-token manager
+
+docker service create --name nginx --replicas 2 --publish 80:80 nginx
+docker service ls
+docker ps
+
+docker-machine ip worker1
+docker service inspect nginx
+docker service scale nginx=5
+docker container rm <id>
+docker service rm nginx
+
+docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6
+docker service update --image redis:3.0.7 redis
+docker node update --availability drain <id servera>
+docker network ls
+docker node update --label-add ID=1 <id servera>
+docker service create --name nginx --replicas 2 --constraint node.labels.id==1 --publish 80:80 nginx
+docker service create --name nginx --replicas 2 --publish 80:80 nginx
+
+
+
+docker desktop settings
+{
+  "registry-mirrors": [],
+  "insecure-registries": ["IP_MANAGER:PORT:MANAGER"],
+  "debug": false,
+  "experimental": false,
+  "features": {
+    "buildkit": true
+  },
+  "builder": {
+    "gc": {
+      "enabled": true,
+      "defaultKeepStorage": "20GB"
+    }
+  }
+}
+
+promeniti fajl na menageru (sudo su)
+/var/lib/boot2../profile 
+dodati --insecure-registry 192.168.43.39:5000
+
+
+docker service create --name registry --replicas 1 --publish 5000:5000 registry:2
+http://192.168.43.39:5000/v2/_catalog
+docker image ls
+docker tag authentication_db_migration 192.168.43.39:5000/authentication_db_migration 
+docker tag authentication 192.168.43.39:5000/authentication 
+docker push 192.168.43.39:5000/authentication_db_migration
+docker push 192.168.43.39:5000/authentication
+docker pull 192.168.43.39:5000/authentication_db_migration
+docker pull 192.168.43.39:5000/authentication
+docker tag 192.168.43.39:5000/authentication_db_migration authentication_db_migration 
+docker tag 192.168.43.39:5000/authentication authentication
+
+cp /E:/IEP_Rad/06/stack.yaml stack.yaml :(
+	
+
+docker cp file.txt a6c1ff6348f4:/tmp :(
+docker cp <filename> <container-id>:<path> :(
+docker cp <filename> <container-id>:<path> :(
+
+
+username: docker
+password:tcuser
+pscp E:\IEP_Rad\06\stack.yaml docker@192.168.43.39:/home/docker/stack.yaml :)
+
+docker stack deploy --compose-file stack.yaml authentication_stack
+docker service ls
+
+
+kubectl apply -f .\nginx-deployment.yaml
+kubectl get deployment
+kubectl get replicaset
+kubectl get pod
+kubectl describe pod <podname>
+kubectl describe deployment
+kubectl get deployment -o yaml
+kubectl logs nginx-deployment-7848d4b86f-7vxg9
+kubectl exec -it nginx-deployment-7848d4b86f-7vxg9 -- bin/bash                             exit
+describe service nginx-deployment
+kubectl get pod -o wide
+nestat -a
+kubectl get pv
+kubectl delete all --all
+kubectl delete pvc --all
+kubectl delete pv --all
+
+docker run -d -p 5000:5000 --name registry registry:2
+docker tag authentication 192.168.43.110:5000/authentication
+docker tag authentication_db_migration 192.168.43.110:5000/authentication_db_migration
+docker push 192.168.43.110:5000/authentication
+docker push 192.168.43.110:5000/authentication_db_migration
+
+kubectl delete pod --all
+kubectl get secret
+kubectl get configmap
+kubectl logs authentication-db-migration
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.48.1/deploy/static/provider/cloud/deploy.yaml
+kubectl get pod -n ingress-nginx
+ipconfig /flushdns
