@@ -20,6 +20,8 @@ docker ps
 docker-machine ip worker1
 docker service inspect nginx
 docker service scale nginx=5
+docker service ps
+docker service ps <service name>
 docker container rm <id>
 docker service rm nginx
 

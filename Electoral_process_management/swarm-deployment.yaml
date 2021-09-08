@@ -16,6 +16,9 @@ services:
       - DATABASE_URL=election_database
     networks:
       - admin_network
+    deploy:
+      restart_policy:
+        condition: on-failure
 
   redis:
     image: redis
@@ -48,10 +51,14 @@ services:
       - 5002:5002
     networks:
       - voting_station_network
+    deploy:
+      replicas: 3
 
 volumes:
   election_volume:
 
 networks:
   admin_network:
+    driver: overlay
   voting_station_network:
+    driver: overlay

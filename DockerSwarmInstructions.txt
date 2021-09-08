@@ -1,0 +1,47 @@
+
+1. Napraviti docker masine
+
+a) nacin
+	.\docker-machine.exe create manager --virtualbox-no-vtx-check :(
+
+b) nacin
+	Add Hyper-V external switch
+	Hyper-V Manager > MY DESKTOP > Virtual Switch Manager > External > Create Virtual Switch > Name:docker-machine-external-switch > OK
+
+	.\docker-machine.exe --native-ssh create --driver hyperv --hyperv-virtual-switch docker-machine-external-switch manager
+	.\docker-machine.exe --native-ssh create --driver hyperv --hyperv-virtual-switch docker-machine-external-switch worker0
+	.\docker-machine.exe --native-ssh create --driver hyperv --hyperv-virtual-switch docker-machine-external-switch worker1
+
+2. Provera
+	.\docker-machine.exe ls
+
+3. Povezati se na managera
+
+	.\docker-machine.exe --native-ssh ssh manager // ili .\docker-machine.exe ssh manager
+
+	docker swarm init // ili docker swarm init --advertise-addr {ip}
+	docker swarm join-token manager
+
+3. Povezati se na workera
+
+	.\docker-machine.exe --native-ssh ssh worker0 // ili .\docker-machine.exe ssh worker0 
+	docker swarm join --token SWMTKN-1-401gpcj8aqjxczb23tmm0cos4qk266b71727slb9xnnuo6zn1u-51f5sxtjabifuwomz7vireish 192.168.0.18:2377
+
+4. Provera na manageru
+
+	docker node ls
+	docker info
+
+X. Izlazak workera is srama 
+	docker swarm leave
+X. Provera na manageru da je otisao
+	docker node ls
+X. Izbacivanje workera od menagera
+	docker node rm worker0
+X. Provera na manageru da je izbacen
+	docker node ls
+
+
+
+
+
