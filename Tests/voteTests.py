@@ -143,7 +143,7 @@ def setUpPresidentialElectionTest ( withAuthentication, authenticationAddress, a
         seconds = (start - datetime.datetime.now ( ) ).total_seconds ( );
         if ( seconds < 0 ):
             seconds = 0;
-        time.sleep ( seconds );
+        time.sleep ( seconds + 3);
 
 
         guids    = getGuids ( );
@@ -195,7 +195,7 @@ def setUpParliamentaryElection ( withAuthentication, authenticationAddress, admi
         seconds = (start - datetime.datetime.now ( ) ).total_seconds ( );
         if ( seconds < 0 ):
             seconds = 0;
-        time.sleep ( seconds );
+        time.sleep ( seconds + 3);
 
 
         guids   = getGuids ( );
@@ -246,7 +246,7 @@ def setUpGetResultsRequest ( withAuthentication, authenticationAddress, getElect
 
         if (seconds < 0):
             seconds = 0;
-        time.sleep ( seconds );
+        time.sleep ( seconds + 3);
 
         id = "";
         if ( electionId is None):

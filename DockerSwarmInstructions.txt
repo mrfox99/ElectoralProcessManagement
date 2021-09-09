@@ -19,7 +19,7 @@ b) nacin
 
 	.\docker-machine.exe --native-ssh ssh manager // ili .\docker-machine.exe ssh manager
 
-	docker swarm init // ili docker swarm init --advertise-addr {ip}
+	docker swarm init // ili docker swarm init --advertise-addr <ip>
 	docker swarm join-token manager
 
 3. Povezati se na workera
@@ -41,7 +41,120 @@ X. Izbacivanje workera od menagera
 X. Provera na manageru da je izbacen
 	docker node ls
 
+5. Naci ip managera jer ce na njemu biti docker repozitorijum
+	.\docker-machine.exe ip manager
 
+6. Postavi ip managera u doker repozitorijum
+	Docker > Settings > Docker Engine > "insecure-registries": "<ip>:<port>" // "insecure-registries":"192.168.0.24:5533"
 
+7. Postavi ip managera u repozitorijum managera
+	.\docker-machine.exe --native-ssh ssh manager
+	sudo su
+	cd /var/lib/boot2docker
+	vi profile
+		vi editor controlls:
+		k – Move cursor up
+		j – Move cursor down
+		h – Move cursor left
+		l – Move cursor right
+		i – Insert at cursor (goes into insert mode)
+		ESC ili ctrl-c – Terminate insert mode
+		:w – Save the file but keep it open
+		:q – Quit without saving
+		:wq – Save the file and quit
+	--label provider=..
+	--insecure-registry=<ip_managera>:<port> // //192.168.0.24:5533
+	exit
+	exit
+	.\docker-machine.exe restart manager
 
+8. Napraviti repozitorijum na manageru
+	.\docker-machine.exe --native-ssh ssh manager
+	docker service create --name registry --replicas 1 --publish 5533:5000 registry:2
+
+9. Provera repozitorijuma na broweseru <ip_managera><port>/v2/_catalog // 192.168.0.24:5533/v2/_catalog
+
+10. Promeniti tagove na lokalnoj masini
+	docker tag authentication <ip_managera>:<port>/authentication
+	docker tag authentication_database_migration <ip_managera>:<port>/authentication_database_migration
+	docker tag admin <ip_managera>:<port>/admin
+	docker tag voting_station <ip_managera>:<port>/voting_station
+	docker tag daemon <ip_managera>:<port>/daemon
+	docker tag election_database_migration <ip_managera>:<port>/election_database_migration
+	
+
+	//docker tag authentication 192.168.0.24:5533/authentication
+	//docker tag authentication_database_migration 192.168.0.24:5533/authentication_database_migration
+	//docker tag admin 192.168.0.24:5533/admin
+	//docker tag voting_station 192.168.0.24:5533/voting_station
+	//docker tag daemon 192.168.0.24:5533/daemon
+	//docker tag election_database_migration 192.168.0.24:5533/election_database_migration
+
+11. Pushovati na repozitorijum sve imege sa lokalne masine
+
+	docker push <ip_managera>:<port>/authentication
+	docker push <ip_managera>:<port>/authentication_database_migration
+	docker push <ip_managera>:<port>/admin
+	docker push <ip_managera>:<port>/voting_station
+	docker push <ip_managera>:<port>/daemon
+	docker push <ip_managera>:<port>/election_database_migration
+
+	//docker push 192.168.0.24:5533/authentication
+	//docker push 192.168.0.24:5533/authentication_database_migration
+	//docker push 192.168.0.24:5533/admin
+	//docker push 192.168.0.24:5533/voting_station
+	//docker push 192.168.0.24:5533/daemon
+	//docker push 192.168.0.24:5533/election_database_migration
+
+12. Provera repozitorijuma na broweseru <ip_managera><port>/v2/_catalog // 192.168.0.24:5533/v2/_catalog
+
+13. Pullovati sa repozitorijum sve imege sa manager masine
+
+	docker pull <ip_managera>:<port>/authentication
+	docker pull <ip_managera>:<port>/authentication_database_migration
+	docker pull <ip_managera>:<port>/admin
+	docker pull <ip_managera>:<port>/voting_station
+	docker pull <ip_managera>:<port>/daemon
+	docker pull <ip_managera>:<port>/election_database_migration
+
+	//docker pull 192.168.0.24:5533/authentication
+	//docker pull 192.168.0.24:5533/authentication_database_migration
+	//docker pull 192.168.0.24:5533/admin
+	//docker pull 192.168.0.24:5533/voting_station
+	//docker pull 192.168.0.24:5533/daemon
+	//docker pull 192.168.0.24:5533/election_database_migration
+
+14. Vratiti tagove na manager masini
+	docker tag <ip_managera>:<port>/authentication authentication 
+	docker tag <ip_managera>:<port>/authentication_database_migration authentication_database_migration 
+	docker tag <ip_managera>:<port>/admin admin 
+	docker tag <ip_managera>:<port>/voting_station voting_station
+	docker tag <ip_managera>:<port>/daemon daemon 
+	docker tag <ip_managera>:<port>/election_database_migration election_database_migration
+	
+
+	//docker tag 192.168.0.24:5533/authentication authentication 
+	//docker tag 192.168.0.24:5533/authentication_database_migration authentication_database_migration 
+	//docker tag 192.168.0.24:5533/admin admin 
+	//docker tag 192.168.0.24:5533/voting_station voting_station 
+	//docker tag 192.168.0.24:5533/daemon daemon 
+	//docker tag 192.168.0.24:5533/election_database_migration election_database_migration
+
+15. Prebaciti comopse fajlove sa lokalne masine na managera
+	.\pscp.exe ...\Authentification\stack.yaml docker@<ip>:/home/docker/authentication_stack.yaml
+	.\pscp.exe ...\Electoral_process_management\stack.yaml docker@<ip>:/home/docker/electoral_stack.yaml
+	
+	username: docker
+	password: tcuser
+
+	.\pscp.exe F:\ElectoralProcessManagement\Authentification\stack.yaml docker@192.168.0.24:/home/docker/authentication_stack.yaml
+	.\pscp.exe F:\ElectoralProcessManagement\Electoral_process_management\stack.yaml docker@192.168.0.24:/home/docker/electoral_stack.yaml
+
+16. Pokrenuti stack na manageru
+	docker stack deploy --compose-file authentication_stack.yaml authentication_stack
+	docker stack deploy --compose-file electoral_stack.yaml electoral_stack
+
+17. Provera na manageru
+	docker service ls
+	
 
